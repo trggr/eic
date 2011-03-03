@@ -49,17 +49,15 @@
   "Moves animal"
   [anim]
   (let [dir (:dir anim) x (:x anim) y (:y anim)]
-    (struct animal
-	    (mod (+ x (cond
-		       (between? dir 2 4) 1
-		       (or (= dir 1) (= dir 5)) 0
-		       :else -1)) *width*)
-	    (mod (+ y (cond (between? dir 0 2) -1
-			    (between? dir 4 6) 1
-			    :else 0)) *height*)
-	    (dec (:energy anim))
-	    (:dir anim)
-	    (:genes anim))))
+    (assoc anim
+      :x (mod (+ x (cond
+		    (between? dir 2 4) 1
+		    (or (= dir 1) (= dir 5)) 0
+		    :else -1)) *width*)
+      :y (mod (+ y (cond (between? dir 0 2) -1
+			 (between? dir 4 6) 1
+			 :else 0)) *height*)
+      :energy (dec (:energy anim)))))
 
 (defn- angle
   [genes x]
@@ -121,7 +119,7 @@
      (turn-world (first world) (second world)))
   ([animals plants]
      (let [alive-animals     (filter #(> (:energy %) 0) animals)
-	   travelled-animals (map #(move (turn %)) alive-animals) 
+	   travelled-animals (map #(move (turn %)) alive-animals)
 	   updated-world (meal travelled-animals plants)]
        (list (flatten (map reproduce (first updated-world)))
 	     (add-plants (second updated-world))))))
@@ -170,7 +168,7 @@
      (draw-world *animals* *plants*)))
 
 ;;----- Tests ------
-;; (load-file "/tim/clojure/evol.clj")
+;; (load-file "/tim/clojure/eic/evol.clj")
 
 (def *plants* (-> *plants* add-plants add-plants add-plants))
 
