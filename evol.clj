@@ -114,7 +114,8 @@
 	       (second x))))))
 
 (defn turn-world
-  "Simulates one day in a world. Returns updated animals (first), and updated plants (second)"
+  "Simulates one day in a world. Returns updated
+   animals (first), and updated plants (second)"
   ([world]
      (turn-world (first world) (second world)))
   ([animals plants]
@@ -139,12 +140,13 @@
   (println "Five strongest animals:")
   (println (map to-char (take 5 (sort-by #(* -1 (:energy %)) animals))))
   (print "Groups in 20 energy increments: ")
-  (println (map second
-		(map (juxt first count)
-		     (partition-by identity
-				   (sort
-				    (map #(int (/ (:energy %) 20))
-					 animals)))))))
+  (println (->> animals
+		(map #(int (/ (:energy %) 20)))
+		sort
+		(partition-by identity)
+		(map (juxt first count))
+		(map second))))
+
 (defn draw-world
   "Draws the world"
   [animals plants]
